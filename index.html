@@ -3,8 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ХАОС ГЕNERATOR</title>
+<title>ХАОС ГENERATOR</title>
 <link rel="icon" type="image/png" href="jdf2.png?v=1">
+
 <style>
   body {
     background: #0e0e0e;
@@ -25,13 +26,21 @@
   }
 
   button {
-    margin: 15px 0;
+    margin: 15px 10px 0 0;
     padding: 10px 20px;
     background: #fff;
     color: #000;
     border: none;
     font-weight: bold;
     cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+
+  button.copied {
+    background: #000;
+    color: #fff;
+    border: 1px solid #fff;
   }
 
   .output {
@@ -41,7 +50,18 @@
     letter-spacing: 0.15em;
     white-space: pre-wrap;
   }
-    
+
+  .copy-status {
+    margin-top: 10px;
+    font-size: 12px;
+    letter-spacing: 0.25em;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .copy-status.show {
+    opacity: 1;
+  }
 
   .credit {
     margin-top: 40px;
@@ -55,61 +75,66 @@
   .credit a {
     color: inherit;
     text-decoration: none;
-    cursor: pointer;
   }
-
-  
 </style>
 </head>
-</footer>
+
 <body>
 
 <h2>ГENERATOR JDFLAG TEXT</h2>
 
 <textarea id="input" placeholder="VVЕДИ ТЕКСТ"></textarea>
+
 <button onclick="generate()">ГENERATE</button>
+<button id="copyBtn" onclick="copyResult()">SKOPИROVATЬ</button>
 
 <div class="output" id="output"></div>
+<div class="copy-status" id="copyStatus">SKOPИROVANO</div>
+
 <footer class="credit">
   <a href="https://t.me/granddukeofdark" target="_blank">TG:@granddukeofdark</a>
 </footer>
 
-
 <script>
 const chaosMap = {
-  "А": "A",
-  "В": "V",
-  "Е": "E",
-  "К": "K",
-  "М": "M",
-  "Н": "N",
-  "О": "O",
-  "Р": "R",
-  "С": "S",
-  "Т": "T",
-  "Х": "X",
-  "Л": "L",
-  "Д": "D"
+  "А":"A","В":"V","Е":"E","К":"K","М":"M",
+  "Н":"N","О":"O","Р":"R","С":"S","Т":"T",
+  "Х":"X","Л":"L","Д":"D"
 };
 
-const keepCyrillic = ["Ё","Ь","Ъ","Ж","Ш","Щ","Ч","Ю","Я","Г","Л"];
-
-function chaosify(text, power = 0.6) {
-  return text.toUpperCase().split("").map(char => {
-    if (keepCyrillic.includes(char)) return char;
-    if (chaosMap[char] && Math.random() < power) {
-      return chaosMap[char];
-    }
-    return char;
-  }).join("");
+function chaosify(text) {
+  return text
+    .toUpperCase()
+    .split("")
+    .map(c => chaosMap[c] ?? c)
+    .join("");
 }
 
 function generate() {
   const input = document.getElementById("input").value;
   document.getElementById("output").textContent = chaosify(input);
 }
-</script>
 
+function copyResult() {
+  const out = document.getElementById("output").textContent;
+  if (!out) return;
+
+  navigator.clipboard.writeText(out);
+
+  const btn = document.getElementById("copyBtn");
+  const status = document.getElementById("copyStatus");
+
+  btn.classList.add("copied");
+  status.classList.add("show");
+
+  setTimeout(() => {
+    btn.classList.remove("copied");
+    status.classList.remove("show");
+  }, 1200);
+}
+</script>
 
 </body>
 </html>
+
+
